@@ -42,13 +42,18 @@ export async function apiFetch(path, { method = "GET", body = null, form = false
   return resp.status === 204 ? null : await resp.json();
 }
 
-// PUBLIC_INTERFACE
+/**
+ * PUBLIC_INTERFACE
+ * Login user with email/username and password.
+ */
 export async function login(username, password) {
-  // FastAPI expects x-www-form-urlencoded for /auth/token
+  // FastAPI expects x-www-form-urlencoded for /auth/token and expects the field names
+  // username and password, just as we're using here.
   const data = new URLSearchParams();
-  data.append("username", username);
+  data.append("username", username.trim());
   data.append("password", password);
 
+  // Ensure form-encoded POST (form: true triggers correct Content-Type in apiFetch)
   const resp = await apiFetch("/auth/token", {
     method: "POST",
     body: data,
