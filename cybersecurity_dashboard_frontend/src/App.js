@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { AuthProvider, useAuth } from "./AuthContext";
 import DashboardLayout from "./components/DashboardLayout";
-import LoginForm from "./components/LoginForm";
-import RegisterForm from "./components/RegisterForm";
 import Settings from "./components/Settings";
 import SearchPage from "./components/SearchPage";
 import "./App.css";
@@ -22,19 +19,16 @@ function App() {
   };
 
   return (
-    <AuthProvider>
-      <div className="App">
-        <AppRoutes onToggleTheme={toggleTheme} theme={theme} />
-      </div>
-    </AuthProvider>
+    <div className="App">
+      <AppRoutes onToggleTheme={toggleTheme} theme={theme} />
+    </div>
   );
 }
 
 // PUBLIC_INTERFACE
 function AppRoutes({ onToggleTheme, theme }) {
-  // We'll do simple routing without react-router, since it's not a required dependency.
+  // Route state for navigation (simple hash-based)
   const [route, setRoute] = useState(window.location.hash || "#/");
-  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     const handler = () => setRoute(window.location.hash || "#/");
@@ -43,14 +37,8 @@ function AppRoutes({ onToggleTheme, theme }) {
   }, []);
 
   let mainView = null;
-  if (route.startsWith("#/login")) {
-    mainView = <LoginForm />;
-  } else if (route.startsWith("#/register")) {
-    mainView = <RegisterForm />;
-  } else if (!isAuthenticated) {
-    // Default: force auth if not logged in
-    mainView = <LoginForm />;
-  } else if (route.startsWith("#/settings")) {
+  // Hide Login and Register routes - always render dashboard, settings, or search for all visitors
+  if (route.startsWith("#/settings")) {
     mainView = <Settings />;
   } else if (route.startsWith("#/search")) {
     mainView = <SearchPage />;

@@ -8,7 +8,8 @@ function TopNav({
   theme,
   setRoute
 }) {
-  const { user, logout } = useAuth();
+  // Just get the dummy user for display, logout not needed
+  const { user } = useAuth();
 
   return (
     <nav className="topnav">
@@ -39,11 +40,11 @@ function TopNav({
         {theme === "light" ? "🌙 Dark" : "☀️ Light"}
       </button>
       <div className="user-menu">
-        <span>{user?.email || "User"}</span>
+        <span>{(user && user.email) || "Guest"}</span>
         <button onClick={() => setRoute("#/settings")} title="Settings">
           ⚙️
         </button>
-        <button onClick={logout}>Logout</button>
+        {/* Logout removed for public/guest access */}
       </div>
     </nav>
   );
